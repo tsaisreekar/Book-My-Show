@@ -129,11 +129,12 @@ pipeline {
                     Result: ${currentBuild.result}<br/>
                     URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>
                 """,
-                to: 'thimmavajjalasaisreekar@gmail.com',
+                to: 'thimmavajjalasaisreekar@gmail.com'
             )
         }
     }
 }
+
 
 
 

@@ -30,9 +30,7 @@ pipeline {
                     sh '''
                     $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.projectKey=BMS \
-                        -Dsonar.projectName=BMS \
-                        -Dsonar.sources=bookmyshow-app \
-                        -Dsonar.login=$SONAR_CRED
+                        -Dsonar.projectName=BMS 
                     '''
                 }
             }
@@ -41,7 +39,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: "${SONAR_CRED}"
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
                 }
             }
         }
@@ -50,6 +48,7 @@ pipeline {
             steps {
                 sh '''
                 cd bookmyshow-app
+                ls -la
                 if [ -f package.json ]; then
                     rm -rf node_modules package-lock.json
                     npm install
@@ -103,7 +102,7 @@ pipeline {
                 aws sts get-caller-identity
 
                 echo "Configuring kubectl for EKS..."
-                aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
+                aws eks update-kubeconfig --name likith-eks --region us-west-2
 
                 echo "Deploying application..."
                 kubectl apply -f k8s/deployment.yaml
@@ -128,10 +127,11 @@ pipeline {
                     Result: ${currentBuild.result}<br/>
                     URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>
                 """,
-                to: "${EMAIL_TO}",
+                to: 'thimmavajjalasaisreekar@gmail.com',
             )
         }
     }
 }
+
 
 

@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         jdk 'jdk17'        // JDK name in Jenkins Global Tools
-        nodejs 'node18'    // NodeJS name in Jenkins Global Tools
+        nodejs 'node23'    // NodeJS name in Jenkins Global Tools
     }
 
     environment {
@@ -133,4 +133,5 @@ pipeline {
         }
     }
 }
+
 

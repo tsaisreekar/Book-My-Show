@@ -8,12 +8,6 @@ pipeline {
 
     environment {
         SCANNER_HOME     = tool 'sonar-scanner'   // SonarQube scanner tool
-        DOCKER_IMAGE     = 'CICD/bms:latest'   // DockerHub image name
-        DOCKER_CRED      = 'dockerhub-creds'      // Jenkins credential ID for DockerHub
-        SONAR_CRED       = 'sonar-token'          // Jenkins credential ID for SonarQube token
-        EKS_CLUSTER_NAME = 'likith-eks'           // EKS cluster name
-        AWS_REGION       = 'us-west-2'            // AWS region
-        EMAIL_TO         = 'thimmavajjalasaisreekar@gmail.com'
     }
 
     stages {
@@ -58,7 +52,7 @@ pipeline {
                 cd bookmyshow-app
                 if [ -f package.json ]; then
                     rm -rf node_modules package-lock.json
-                    npm ci --legacy-peer-deps
+                    npm install
                 else
                     echo "Error: package.json not found!"
                     exit 1
@@ -70,16 +64,35 @@ pipeline {
         stage('Docker Build & Push') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: "${DOCKER_CRED}") {
+                    withDockerRegistry(credentialsId: 'docker', toolNam: 'docker') {
                         sh '''
                         echo "Building Docker image..."
-                        docker build -t $DOCKER_IMAGE -f Dockerfile bookmyshow-app
+                        docker build -t sreekar/bms:latest -f Dockerfile bookmyshow-app
 
                         echo "Pushing image to Docker Hub..."
-                        docker push $DOCKER_IMAGE
+                        docker push sreekar/bms:latest
                         '''
                     }
                 }
+            }
+        }
+        stage('Deploy to container') {
+            steps {
+                sh ''' 
+                echo "Stopping and removing old container"
+                docker stop bms || true
+                docker rm bms || true
+
+                echo "Running new container on port 3000"
+                docker run -d --restart=always --name bms -p 3000:3000 sreekar/bms:latest
+
+                echo "Checking running containers"
+                docker ps -a
+
+                echo "Fetching logs"
+                sleep 5
+                docker logs bms
+                '''
             }
         }
 
@@ -120,3 +133,4 @@ pipeline {
         }
     }
 }
+

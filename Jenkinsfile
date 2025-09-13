@@ -95,26 +95,28 @@ pipeline {
             }
         }
 
-        stage('Deploy to EKS') {
+        stage('Deploy to EKS Cluster') {
             steps {
-                sh '''
-                echo " Verifying AWS credentials..."
-                aws sts get-caller-identity
+                withAWS(credentials: 'aws-creds', region: 'us-west-2') {
+                    sh '''
+                    echo "Verifying AWS credentials..."
+                    aws sts get-caller-identity
+        
+                    echo "Configuring kubectl for EKS cluster..."
+                    aws eks update-kubeconfig --name likith-eks --region us-west-2
+        
+                    echo "Deploying application to EKS..."
+                    kubectl apply -f deployment.yml
+                    kubectl apply -f service.yml
+        
+                    echo "Verifying deployment..."
+                    kubectl get pods
+                    kubectl get svc
+                    '''
+                }
+             }
+         }
 
-                echo "Configuring kubectl for EKS..."
-                aws eks update-kubeconfig --name likith-eks --region us-west-2
-
-                echo "Deploying application..."
-                kubectl apply -f k8s/deployment.yaml
-                kubectl apply -f k8s/service.yaml
-
-                echo "Checking resources..."
-                kubectl get pods -o wide
-                kubectl get svc -o wide
-                '''
-            }
-        }
-    }
 
     post {
         always {
@@ -132,6 +134,7 @@ pipeline {
         }
     }
 }
+
 
 
 

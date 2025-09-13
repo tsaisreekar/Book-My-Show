@@ -130,12 +130,15 @@ pipeline {
                     Result: ${currentBuild.result}<br/>
                     URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>
                 """,
-                to: 'saisreekar517@gmail.com'
+                to: "saisreekar517@gmail.com"
+                mimeType: 'text/html',
+                recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
                 
             )
         }
     }
 }
+
 
 
 

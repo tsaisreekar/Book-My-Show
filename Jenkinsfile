@@ -121,22 +121,17 @@ pipeline {
 
     post {
         always {
-            emailext (
-                to: 'saisreekar517@gmail.com, thimmavajjalasaisreekar@gmail.com',
-                subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
-                body: """
-                <b>Project:</b> ${env.JOB_NAME}<br/>
-                <b>Build Number:</b> ${env.BUILD_NUMBER}<br/>
-                <b>Result:</b> ${currentBuild.result}<br/>
-                <b>URL:</b> <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>
-                """,
-                mimeType: 'text/html',
-                attachLog: true
-            )
+            emailext attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                      "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                      "URL: ${env.BUILD_URL}<br/>",
+                to: 'saisreekar517@gmail.com'
         }
     }
 
 }
+
 
 
 

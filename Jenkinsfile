@@ -116,6 +116,7 @@ pipeline {
                 }
             }
         }
+    }
 
 
     post {
@@ -134,6 +135,7 @@ pipeline {
         }
     }
 }
+
 
 
 

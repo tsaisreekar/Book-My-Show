@@ -114,8 +114,8 @@ pipeline {
                     kubectl get svc
                     '''
                 }
-             }
-         }
+            }
+        }
 
 
     post {
@@ -134,6 +134,7 @@ pipeline {
         }
     }
 }
+
 
 
 

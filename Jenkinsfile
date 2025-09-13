@@ -121,23 +121,16 @@ pipeline {
 
     post {
         always {
-            emailext (
-                attachLog: true,
-                subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
-                body: """
-                    Project: ${env.JOB_NAME}<br/>
-                    Build Number: ${env.BUILD_NUMBER}<br/>
-                    Result: ${currentBuild.result}<br/>
-                    URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>
-                """,
-                to: "saisreekar517@gmail.com",
-                mimeType: 'text/html',
-                recipientProviders: [[$class: 'CulpritsRecipientProvider'], [$class: 'RequesterRecipientProvider']]
-                
-            )
+            emailext attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                      "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                      "URL: ${env.BUILD_URL}<br/>",
+                to: 'saisreekar517@gmail.com',
         }
     }
 }
+
 
 
 

@@ -123,7 +123,6 @@ pipeline {
         always {
             emailext (
                 to: 'thimmavajjalasaisreekar@gmail.com',
-                attachLog: true,
                 subject: "Build #${env.BUILD_NUMBER} - ${currentBuild.result}",
                 body: """
                     Project: ${env.JOB_NAME}<br/>
@@ -131,11 +130,13 @@ pipeline {
                     Result: ${currentBuild.result}<br/>
                     URL: <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a>
                 """,
+                attachLog: true
                 
             )
         }
     }
 }
+
 
 
 
